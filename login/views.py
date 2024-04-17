@@ -3,6 +3,7 @@ import logging
 from braces.views import CsrfExemptMixin
 from django.conf import settings
 from django.contrib import messages
+from django.contrib import admin
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.hashers import make_password
@@ -15,7 +16,7 @@ from django.http.response import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView
 from django.views.generic.base import View, TemplateView
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.edit import FormView, CreateView
@@ -51,6 +52,7 @@ from emstrack.mixins import (
     ImportModelMixin,
     ProcessImportModelMixin,
     PaginationViewMixin,
+    UpdatedByWithInlinesMixin,
 )
 from emstrack.models import defaults
 from emstrack.views import get_page_links, get_page_size_links
@@ -70,6 +72,8 @@ from .forms import (
     UserHospitalPermissionAdminForm,
     RestartForm,
     UserProfileAdminForm,
+    OrganizationCreateForm,
+    OrganizationUpdateForm
 )
 from .models import (
     TemporaryPassword,
@@ -82,6 +86,7 @@ from .models import (
     ClientStatus,
     UserProfile,
     TokenLogin,
+    Organization,
 )
 from .permissions import get_permissions
 from .resources import (
@@ -90,6 +95,7 @@ from .resources import (
     GroupAmbulancePermissionResource,
     GroupHospitalPermissionResource,
     UserImportResource,
+    OrganizationResource,
 )
 
 logger = logging.getLogger(__name__)
@@ -116,7 +122,6 @@ class SignupView(FormView):
 
 # login
 
-
 class LoginView(auth_views.LoginView):
     template_name = 'index.html'
     authentication_form = AuthenticationForm
@@ -130,6 +135,8 @@ class LoginView(auth_views.LoginView):
 
         # get user
         user = self.request.user
+
+        # get organization?
 
         # if user is dispatcher set session to expire in 14 days
         if user.is_superuser or user.is_staff or user.userprofile.is_dispatcher:
@@ -1103,4 +1110,55 @@ class GroupHospitalPermissionProcessImportView(
 
     import_breadcrumbs = {'login:list-group': _("Groups")}
 
+# Organizations 
 
+class OrganizationListView(PaginationViewMixin, ListView):
+    model = Organization
+    template_name = 'login/org_list.html'
+    ordering = ['name']
+
+class OrganizationCreateView(SuccessMessageMixin, CreateView):
+    model = Organization
+    form_class = OrganizationCreateForm
+    template_name = 'login/org_create_form.html'
+
+    def get_success_message(self, cleaned_data):
+        return "Successfully created organization '{}'".format(cleaned_data['name'])
+    
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+class OrganizationDetailView(DetailView):
+    model = Organization
+    template_name = 'login/org_detail.html'
+
+class OrganizationUpdateView(SuccessMessageMixin, UpdateView):
+    model = Organization
+    form_class = OrganizationUpdateForm
+    template_name = 'login/org_form.html'
+
+    def get_success_message(self, cleaned_data):
+        return "Successfully updated location '{}'".format(cleaned_data['name'])
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+class OrganizationExportView(ExportModelMixin, View):
+    model = Organization
+    resource_class = OrganizationResource
+
+class OrganizationImportView(ImportModelMixin, TemplateView):
+    model = Organization
+    resource_class = OrganizationResource
+
+    process_import_url = 'login:process-import-org'
+    import_breadcrumbs = {'login:list-org': _("Organizations")}
+
+class OrganizationProcessImportView(SuccessMessageMixin, ProcessImportModelMixin, FormView):
+    model = Organization
+    resource_class = OrganizationResource
+
+    success_message = _('Successfully imported organizations')
+    success_url = reverse_lazy('login:list-org')
+
+    import_breadcrumbs = {'login:list-org': _("Organizations")}

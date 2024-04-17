@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib.admin.views.decorators import staff_member_required
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -142,5 +142,37 @@ urlpatterns = [
     url(r'^mqtt/acl/$',
         views.MQTTAclView.as_view(),
         name='acl-mqtt'),
+
+    # organizations
+
+    url(r'^organization/$',
+        staff_member_required(views.OrganizationListView.as_view()),
+        name='list-org'),
+    
+    url(r'^organization/create/$',
+        staff_member_required(views.OrganizationCreateView.as_view()),
+        name='create-org'),
+
+    url(r'^organization/detail/(?P<pk>[0-9]+)$',
+        staff_member_required(views.OrganizationDetailView.as_view()),
+        name='detail-org'),
+
+    url(r'^organization/update/(?P<pk>[0-9]+)$',
+        staff_member_required(views.OrganizationUpdateView.as_view()),
+        name='update-org'),
+
+    url(r'^organization/import/$',
+        staff_member_required(views.OrganizationImportView.as_view()),
+        name='import-org'),
+
+    url(r'^organization/process_import/$',
+        staff_member_required(views.OrganizationProcessImportView.as_view()),
+        name='process-import-org'),
+
+    url(r'^organization/export/$',
+        staff_member_required(views.OrganizationExportView.as_view()),
+        name='export-org'),
+
+    url(r"^select2/", include("django_select2.urls")),
     
 ]

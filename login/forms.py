@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from djangoformsetjs.utils import formset_media_js
+from django_select2.forms import Select2MultipleWidget
 
 from ambulance.models import Ambulance
 from hospital.models import Hospital
@@ -360,3 +361,39 @@ class RestartForm(forms.Form):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
+class OrganizationCreateForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(
+                queryset=User.objects.all(),
+                widget=Select2MultipleWidget,
+                required=True)
+
+    class Meta:
+        model = Organization
+        fields = ['name', 'description', 'users']
+
+class OrganizationUpdateForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(
+            queryset=User.objects.all(),
+            widget=Select2MultipleWidget,
+            required=True)
+
+    class Meta:
+        model = Organization
+        fields = ['name', 'description', 'users']
+
+    def clean(self):
+        # call super
+        super().clean()
+
+        # if updating status or location
+        if 'status' in self.changed_data or 'location' in self.changed_data:
+            # See https://stackoverflow.com/questions/5275476/django-alter-form-data-in-clean-method
+            # Mauricio: I think this odd behavior is because timestamp is not present in the form
+
+            # update timestamp as well
+            now = timezone.now()
+            self.cleaned_data["timestamp"] = now
+            self.instance.timestamp = now
+
+        return self.cleaned_data
