@@ -15,7 +15,8 @@ RUN set -x && \
 
 # Install node
 RUN curl -sL https://deb.nodesource.com/setup_21.x | bash - && \
-    apt-get install -y nodejs npm
+    apt-get install -y nodejs 
+    
 #RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 #RUN nvm install node 
 
