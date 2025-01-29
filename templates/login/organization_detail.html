@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="container">
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'login:list-organization' %}">{% trans "Organizations" %}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ organization.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col">
+
+            <h1>{% trans "Organization" %}</h1>
+
+            <h3>{% trans "Details" %}:</h3>
+
+            <p>
+                <strong>{% trans "Name" %}:</strong>
+                <a href="{% url 'login:update-organization' pk=organization.id %}">{{ organization.name }}</a>
+            </p>
+
+            <p>
+                <strong>{% trans "Description" %}:</strong>
+                {{ organization.description }}
+            </p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

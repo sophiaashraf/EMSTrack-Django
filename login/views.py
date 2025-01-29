@@ -82,6 +82,7 @@ from .models import (
     ClientStatus,
     UserProfile,
     TokenLogin,
+    Organization
 )
 from .permissions import get_permissions
 from .resources import (
@@ -144,6 +145,56 @@ class LoginView(auth_views.LoginView):
 class LogoutView(auth_views.LogoutView):
     next_page = '/'
 
+# Organizations
+
+class OrganizationAdminListView(PaginationViewMixin, ListView):
+    model = Organization
+    template_name = 'login/organization_list.html'
+    ordering = 'name'
+
+class OrganizationAdminDetailView(DetailView):
+    model = Organization
+    template_name = 'login/organization_detail.html'
+    fields = ['name', 'description']
+    
+    def get_context_data(self, **kwargs):
+
+        # call super to retrieve object
+        context = super().get_context_data(**kwargs)
+
+        # retrieve permissions and add to context
+        # context['ambulance_list'] = self.object.groupambulancepermission_set.all()
+        # context['hospital_list'] = self.object.grouphospitalpermission_set.all()
+
+        # retrieve users and add to context
+        # context['user_list'] = self.object.user_set.all()
+
+        return context
+    
+class OrganizationAdminCreateView(SuccessMessageMixin, CreateView):
+    fields = ['name', 'description']
+    #template_name = 'login/group_create.html'
+
+    def get_success_message(self, cleaned_data):
+        return "Successfully created organization '{}'".format(cleaned_data['name'])
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+class OrganizationAdminUpdateView(SuccessMessageWithInlinesMixin, UpdateWithInlinesView):
+    model = Organization
+    #template_name = 'login/group_form.html'
+    #form_class = GroupAdminUpdateForm
+    #inlines = [
+    #    GroupProfileAdminInline,
+    #    GroupAmbulancePermissionAdminInline,
+    #    GroupHospitalPermissionAdminInline,
+    #]
+    def get_success_message(self, cleaned_data):
+        return "Successfully updated organization '{}'".format(cleaned_data['name'])
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 
 # Groups
 

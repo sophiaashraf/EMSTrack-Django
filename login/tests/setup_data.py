@@ -241,6 +241,8 @@ class TestSetupData:
                                                 ambulance=cls.a1,
                                                 can_read=False,
                                                 can_write=False)
+        
+        #TODO: Add organizations to groups
 
         cls.u4.groups.set([cls.g2])
         cls.u5.groups.set([cls.g1, cls.g3])

@@ -25,35 +25,21 @@ urlpatterns = [
         views.SignupView.as_view(),
         name='signup'),
     
-    # User Admin
-    
-    url(r'^user/$',
-        staff_member_required(views.UserAdminListView.as_view()),
-        name='list-user'),
+    # Organization Admin
+    url(r'^organization/$',
+        staff_member_required(views.OrganizationAdminListView.as_view()),
+        name='list-organization'),
+    url(r'^organization/create/$',
+        staff_member_required(views.OrganizationAdminCreateView.as_view()),
+        name='create-organization'),
 
-    url(r'^user/create/$',
-        staff_member_required(views.UserAdminCreateView.as_view()),
-        name='create-user'),
+    url(r'^organization/detail/(?P<pk>[0-9]+)$',
+        staff_member_required(views.OrganizationAdminDetailView.as_view()),
+        name='detail-organization'),
 
-    url(r'^user/detail/(?P<pk>[0-9]+)$',
-        staff_member_required(views.UserAdminDetailView.as_view()),
-        name='detail-user'),
-
-    url(r'^user/update/(?P<pk>[0-9]+)$',
-        staff_member_required(views.UserAdminUpdateView.as_view()),
-        name='update-user'),
-
-    url(r'^user/export/$',
-        staff_member_required(views.UserExportView.as_view()),
-        name='export-user'),
-
-    url(r'^user/import/$',
-        staff_member_required(views.UserImportView.as_view()),
-        name='import-user'),
-
-    url(r'^user/process_import/$',
-        staff_member_required(views.UserProcessImportView.as_view()),
-        name='process-import-user'),
+    url(r'^organization/update/(?P<pk>[0-9]+)$',
+        staff_member_required(views.OrganizationAdminUpdateView.as_view()),
+        name='update-organization'),
 
     # Group Admin
 
@@ -121,6 +107,36 @@ urlpatterns = [
     url(r'^client/logout/(?P<pk>\d+)$',
         staff_member_required(views.ClientLogoutView.as_view()),
         name='logout-client'),
+
+    # User Admin
+    
+    url(r'^user/$',
+        staff_member_required(views.UserAdminListView.as_view()),
+        name='list-user'),
+
+    url(r'^user/create/$',
+        staff_member_required(views.UserAdminCreateView.as_view()),
+        name='create-user'),
+
+    url(r'^user/detail/(?P<pk>[0-9]+)$',
+        staff_member_required(views.UserAdminDetailView.as_view()),
+        name='detail-user'),
+
+    url(r'^user/update/(?P<pk>[0-9]+)$',
+        staff_member_required(views.UserAdminUpdateView.as_view()),
+        name='update-user'),
+
+    url(r'^user/export/$',
+        staff_member_required(views.UserExportView.as_view()),
+        name='export-user'),
+
+    url(r'^user/import/$',
+        staff_member_required(views.UserImportView.as_view()),
+        name='import-user'),
+
+    url(r'^user/process_import/$',
+        staff_member_required(views.UserProcessImportView.as_view()),
+        name='process-import-user'),
 
     # restart
 

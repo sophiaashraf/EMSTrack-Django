@@ -86,7 +86,7 @@ class Permissions:
                     # logger.debug('superuser, {} = {}'.format('equipments', self.equipments))
 
             else:
-
+                # add org permissions (can be overwritten by group or user)
                 # regular users, loop through groups
                 for group in user.groups.all().order_by('groupprofile__priority', '-name'):
                     for (profile_field, object_field) in zip(self.profile_fields, self.object_fields):
@@ -136,6 +136,7 @@ class Permissions:
                         }
                     getattr(self, profile_field).update(permissions)
                     self.equipments.update(equipment_permissions)
+
 
             # build permissions
             for profile_field in self.profile_fields:
