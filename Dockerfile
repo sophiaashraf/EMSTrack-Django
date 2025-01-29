@@ -15,7 +15,10 @@ RUN set -x && \
 
 # Install node
 # RUN curl -sL https://deb.nodesource.com/setup_21.x | bash - && \
-RUN apt-get install -y nodejs npm
+#RUN apt-get install -y nodejs npm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+RUN nvm install node 
+
 
 # Build variables
 ARG BUILD_APP_HOME=/app
