@@ -172,8 +172,9 @@ class OrganizationAdminDetailView(DetailView):
         return context
     
 class OrganizationAdminCreateView(SuccessMessageMixin, CreateView):
+    model = Organization
+    template_name = 'login/organization_create.html'
     fields = ['name', 'description']
-    #template_name = 'login/group_create.html'
 
     def get_success_message(self, cleaned_data):
         return "Successfully created organization '{}'".format(cleaned_data['name'])
