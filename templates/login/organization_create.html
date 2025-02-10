@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- Changed from 'Groups' to 'Organizations' -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'login:list-organization' %}">{% trans "Organizations" %}</a> 
+                <!-- Changed 'list-group' to 'list-organization' -->
+            </li>
+            {% if organization %}
+                <li class="breadcrumb-item">
+                    <a href="{% url 'login:detail-organization' pk=organization.id %}">{{ organization.name }}</a>
+                    <!-- Changed 'detail-group' to 'detail-organization' -->
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans "Update" %}</li>
+            {% else %}
+                <li class="breadcrumb-item active" aria-current="page">{% trans "Create" %}</li>
+            {% endif %}
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col">
+            <!-- Changed heading from 'Group' to 'Organization' -->
+            <h1>
+                {% if organization %}
+                    {% trans "Update Organization" %}
+                    <!-- Changed 'Update Group' to 'Update Organization' -->
+                {% else %}
+                    {% trans "Create Organization" %}
+                    <!-- ^^^ Changed 'Create Group' to 'Create Organization' -->
+                {% endif %}
+            </h1>
+
+            <form method="POST" class="post-form">
+                {% csrf_token %}
+
+                <!-- Updated section heading from 'Details' to 'Organization Details' -->
+                <h3>{% trans "Organization Details" %}</h3>
+
+                <!-- Changed `{{ form }}` to `{{ form.as_table }}` for better formatting -->
+                <table>
+                    {{ form.as_table }}
+                </table>
+
+                <p>{% trans "Edit the organization after creation to provide more details." %}</p>
+                <!-- Changed 'group' to 'organization' in the message -->
+
+                <p>
+                    <button type="submit" class="btn btn-primary">
+                        {% if organization %}
+                            {% trans "Update" %}
+                            <!-- Changed 'Save' to 'Update' for clarity -->
+                        {% else %}
+                            {% trans "Create" %}
+                            <!-- Changed 'Save' to 'Create' for clarity -->
+                        {% endif %}
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
