@@ -10,14 +10,11 @@ RUN set -x && \
     apt-get install -y apt-utils && \
     apt-get install -y dumb-init git gettext \
             gdal-bin libgdal-dev python3-gdal \
-            postgresql-client mosquitto-clients \
-            rsync
+            postgresql-client mosquitto-clients
 
 # Install node
-#For windows
-#RUN apt-get install -y nodejs npm
-
-#For mac
+#RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+    #apt-get install -y nodejs npm
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 RUN nvm install node 
 
@@ -49,17 +46,21 @@ RUN pip install .
 
 WORKDIR $APP_HOME
 
-# create application directories
+# link migration directories into persistent volume
 RUN set -x && \
     mkdir -p /etc/emstrack/migrations && \
     mkdir -p /etc/emstrack/migrations/ambulance && \
     mkdir ambulance && \
+    ln -s /etc/emstrack/migrations/ambulance $APP_HOME/ambulance/migrations && \
     mkdir -p /etc/emstrack/migrations/login && \
     mkdir login && \
+    ln -s /etc/emstrack/migrations/login     $APP_HOME/login/migrations && \
     mkdir -p /etc/emstrack/migrations/hospital && \
     mkdir hospital && \
+    ln -s /etc/emstrack/migrations/hospital  $APP_HOME/hospital/migrations && \
     mkdir -p /etc/emstrack/migrations/equipment && \
     mkdir equipment && \
+    ln -s /etc/emstrack/migrations/equipment $APP_HOME/equipment/migrations && \
     # mosquitto directories
     mkdir -p /mosquitto/data && \
     touch /mosquitto/data/passwd && \
@@ -72,15 +73,6 @@ RUN set -x && \
 
 # Clone application
 COPY . .
-
-# link migration directories into persistent volume
-# since fall of 2024 copy fails if links are made before
-RUN set -x && \
-    ln -s /etc/emstrack/migrations/ambulance $APP_HOME/ambulance/migrations && \
-    ln -s /etc/emstrack/migrations/login     $APP_HOME/login/migrations && \
-    ln -s /etc/emstrack/migrations/hospital  $APP_HOME/hospital/migrations && \
-    ln -s /etc/emstrack/migrations/equipment $APP_HOME/equipment/migrations && \
-    ln -s /etc/emstrack/log $APP_HOME/log
 
 # Init scripts
 COPY scripts/. $SCRIPT_HOME
