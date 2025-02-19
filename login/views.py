@@ -303,8 +303,9 @@ class UserAdminDetailView(DetailView):
         context['ambulance_list'] = self.object.userambulancepermission_set.all()
         context['hospital_list'] = self.object.userhospitalpermission_set.all()
 
-        # retrieve groups and add to context
+        # TODO: retrieve organizations user is in and add to context
         context['group_list'] = self.object.groups.all()
+        context['org_list'] = self.object.organizations.all()
 
         return context
 

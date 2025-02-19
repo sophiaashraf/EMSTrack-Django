@@ -57,6 +57,7 @@ def is_guest(user):
 class Organization(models.Model):
     name = models.CharField(_('name'), max_length=100, unique=True)
     description = models.CharField(_('description'), max_length=100, blank=True)
+    #symmetrical relationships
     users = models.ManyToManyField(User)
     ambulances = models.ManyToManyField('ambulance.Ambulance')
     equipment_set = models.ManyToManyField('equipment.EquipmentSet')

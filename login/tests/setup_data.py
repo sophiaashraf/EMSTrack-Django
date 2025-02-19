@@ -244,7 +244,7 @@ class TestSetupData:
                                                 can_write=False)
         
         #TODO: Add organizations to groups
-        redCross = Organization.objects.create(
+        cls.o1 = Organization.objects.create(
             name = "CruzRoja",
             description = "Red Cross"
         )
