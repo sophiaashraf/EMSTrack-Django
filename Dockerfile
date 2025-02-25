@@ -1,5 +1,5 @@
 # Using ubuntu as a base image
-FROM python:3.7
+FROM python:3.11
 
 # Getting rid of debconf messages
 ARG DEBIAN_FRONTEND=noninteractive
@@ -13,10 +13,23 @@ RUN set -x && \
             postgresql-client mosquitto-clients
 
 # Install node
+#ENV NODE_VERSION 23.8.0
+
 #RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
-    #apt-get install -y nodejs npm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-RUN nvm install node 
+RUN apt-get install -y nodejs npm
+
+#RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash 
+#&& apt-get install -y npm 
+
+#ENV NVM_DIR=/root/.nvm
+#RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+#RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+#RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+#ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+#RUN node --version
+#RUN npm --version
+
+
 
 # Build variables
 ARG BUILD_APP_HOME=/app
