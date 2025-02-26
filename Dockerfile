@@ -1,5 +1,5 @@
 # Using ubuntu as a base image
-FROM python:3.7
+FROM python:3.8
 
 # Getting rid of debconf messages
 ARG DEBIAN_FRONTEND=noninteractive
