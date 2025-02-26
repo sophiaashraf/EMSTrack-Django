@@ -168,6 +168,7 @@ class OrganizationAdminDetailView(DetailView):
 
         # retrieve users and add to context
         # context['user_list'] = self.object.user_set.all()
+        context['group_list'] = self.object.groups.all()
 
         return context
     
